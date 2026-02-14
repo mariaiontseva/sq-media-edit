@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Media — SmarterQueue</title>
+<style>
+  @font-face { font-family:'Proxima Nova'; src:local('Proxima Nova'),local('ProximaNova-Regular'); font-weight:400; }
+  @font-face { font-family:'Proxima Nova'; src:local('Proxima Nova Medium'),local('ProximaNova-Medium'); font-weight:500; }
+  @font-face { font-family:'Proxima Nova'; src:local('Proxima Nova Semibold'),local('ProximaNova-Semibold'),local('Proxima Nova Bold'),local('ProximaNova-Bold'); font-weight:600; }
+  @font-face { font-family:'Proxima Nova'; src:local('Proxima Nova Bold'),local('ProximaNova-Bold'); font-weight:700; }
+
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+  :root {
+    --blue: #4075BF;
+    --blue-hover: #3466a8;
+    --blue-10: rgba(64,117,191,0.10);
+    --blue-06: rgba(64,117,191,0.06);
+    --green: #34a853;
+    --green-hover: #2d9249;
+    --red: #d93025;
+    --text: #1a1a2e;
+    --text-2: #3d4663;
+    --text-3: #6b7394;
+    --text-4: #9ca3bf;
+    --border: #e1e5ee;
+    --border-light: #edf0f7;
+    --bg: #f4f5f9;
+    --bg-2: #f8f9fb;
+    --white: #fff;
+    --overlay: rgba(15,20,40,0.55);
+    --overlay-sub: rgba(15,20,40,0.35);
+    --r: 8px;
+    --r-lg: 12px;
+    --font: 'Proxima Nova','Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 16px 48px rgba(0,0,0,0.14), 0 6px 16px rgba(0,0,0,0.06);
+    --shadow-dd: 0 4px 20px rgba(0,0,0,0.12);
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px;
+    -webkit-font-smoothing: antialiased;
+    gap: 24px;
+  }
+
+  /* ── Outer media block ── */
+  .media-block {
+    width: 100%; max-width: 620px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 24px 28px;
+  }
+
+  .media-block__head {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-3);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  .help-icon {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; cursor: help; line-height: 1;
+  }
+
+  .btn {
+    font-family: var(--font); font-weight: 600;
+    border: none; border-radius: var(--r);
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  .btn--blue {
+    font-size: 14px; color: #fff; background: var(--blue);
+    padding: 10px 20px;
+  }
+  .btn--blue:hover { background: var(--blue-hover); }
+
+  .btn--done {
+    font-size: 14px; font-weight: 600; color: #fff;
+    background: var(--blue); padding: 0 28px; height: 48px;
+    border-radius: var(--r);
+  }
+  .btn--done:hover { background: var(--blue-hover); }
+
+  /* Thumbnails */
+  .thumbs { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  .thumb {
+    position: relative; width: 140px; height: 140px;
+    border-radius: var(--r); overflow: hidden;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .thumb__badge {
+    position: absolute; top: 8px; right: 8px;
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.04em; color: #fff;
+    background: rgba(0,0,0,0.45); padding: 2px 7px;
+    border-radius: 4px; backdrop-filter: blur(2px);
+  }
+
+  .thumb__remove {
+    position: absolute; top: 8px; left: 8px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(255,255,255,0.92); border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--text); cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12); transition: background 0.15s;
+  }
+  .thumb__remove:hover { background: #fff; }
+
+  .thumb__edit {
+    position: absolute; bottom: 8px; right: 8px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--blue); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    transition: background 0.15s;
+  }
+  .thumb__edit:hover { background: var(--blue-hover); }
+  .thumb__edit svg { width: 14px; height: 14px; }
+
+  /* Tooltip */
+  .thumb__edit::after {
+    content: 'Edit Media Properties';
+    position: absolute; bottom: calc(100% + 8px); right: 0;
+    background: #1a1a2e; color: #fff;
+    font-size: 12px; font-weight: 500; white-space: nowrap;
+    padding: 6px 10px; border-radius: 6px;
+    pointer-events: none;
+    opacity: 0; transform: translateY(4px);
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .thumb__edit::before {
+    content: '';
+    position: absolute; bottom: calc(100% + 4px); right: 10px;
+    border: 5px solid transparent;
+    border-top-color: #1a1a2e;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .thumb__edit:hover::after { opacity: 1; transform: translateY(0); }
+  .thumb__edit:hover::before { opacity: 1; }
+
+  /* Ratio segmented control */
+  .ratio-toggle {
+    display: inline-flex;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+  }
+  .ratio-btn {
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    color: var(--text-3);
+    background: none; border: none; cursor: pointer;
+    padding: 8px 16px;
+    transition: background 0.15s, color 0.15s;
+    border-right: 1px solid var(--border);
+  }
+  .ratio-btn:last-child { border-right: none; }
+  .ratio-btn:hover { background: var(--bg); color: var(--text); }
+  .ratio-btn.active { background: var(--blue); color: #fff; }
+
+  .thumb__play {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  .thumb__play svg { width: 16px; height: 16px; fill: #fff; margin-left: 2px; }
+
+  /* ── Modal system ── */
+  .overlay {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 24px;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+  .overlay.open { opacity: 1; visibility: visible; }
+  .overlay--main { background: var(--overlay); z-index: 100; }
+  .overlay--sub  { background: var(--overlay-sub); z-index: 200; }
+
+  .dialog {
+    background: var(--white); border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    transform: translateY(6px);
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    display: flex; flex-direction: column;
+  }
+  .overlay.open .dialog { transform: translateY(0); }
+
+  .dialog--img { max-width: 780px; max-height: 90vh; width: fit-content; min-width: 480px; }
+  .dialog--vid { max-width: 780px; max-height: 90vh; }
+  .dialog--tag { max-width: 380px; }
+
+  .dialog__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px 0; flex-shrink: 0;
+  }
+
+  .dialog__title {
+    font-size: 18px; font-weight: 600; color: var(--text);
+    line-height: 1.2;
+  }
+
+  .close-x {
+    width: 28px; height: 28px; border: none; background: none;
+    color: var(--text-4); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; padding: 0; flex-shrink: 0;
+    transition: color 0.15s, background 0.15s;
+  }
+  .close-x:hover { color: var(--text); background: var(--bg); }
+  .close-x svg { width: 20px; height: 20px; }
+
+  .dialog__body {
+    padding: 16px 24px 24px;
+    overflow-y: auto; flex: 1;
+  }
+
+  .dialog__foot {
+    padding: 0 24px 20px;
+    display: flex; justify-content: flex-end;
+    flex-shrink: 0;
+  }
+
+  /* ── Edit Image ── */
+  .img-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .photo-wrap {
+    position: relative;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .photo-box {
+    position: relative;
+    border-radius: var(--r);
+    overflow: hidden;
+    line-height: 0;
+    user-select: none;
+    z-index: 1;
+  }
+  .photo-box, .photo-box * { cursor: crosshair !important; }
+  .photo-box .ptag, .photo-box .ptag * { cursor: grab !important; }
+  .photo-box .ptag:active, .photo-box .ptag:active * { cursor: grabbing !important; }
+  .photo-box .ptag__x { cursor: pointer !important; }
+  .photo-box img {
+    display: block;
+    max-height: calc(90vh - 180px);
+    max-width: 100%;
+  }
+
+  /* Photo tags */
+  .ptag {
+    position: absolute;
+    background: var(--blue);
+    color: #fff;
+    font-size: 16px; font-weight: 600; letter-spacing: 0.01em;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transform: translate(-50%, -50%);
+    display: inline-flex; align-items: center; gap: 7px;
+    white-space: nowrap; z-index: 2;
+    pointer-events: auto;
+    cursor: grab;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    user-select: none;
+    transition: box-shadow 0.15s;
+  }
+  .ptag:active { cursor: grabbing; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+
+  .ptag__x {
+    border: none; background: none;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer; font-size: 14px; padding: 0;
+    line-height: 1; display: inline-flex;
+    transition: color 0.1s;
+  }
+  .ptag__x:hover { color: #fff; }
+
+  /* Right side */
+  .sidebar { display: flex; flex-direction: column; gap: 20px; width: 280px; flex-shrink: 0; }
+
+  .inp {
+    font-family: var(--font); font-size: 16px;
+    padding: 10px 14px;
+    border: 1px solid var(--border); border-radius: var(--r);
+    background: var(--white); color: var(--text);
+    outline: none; width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    resize: vertical;
+  }
+  .inp:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-06); }
+  .inp::placeholder { color: var(--text-4); font-size: 16px; }
+
+
+  /* ── Edit Video ── */
+  .vid-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .vid-preview {
+    position: relative; border-radius: var(--r);
+    overflow: hidden; background: #0a0a0f; line-height: 0;
+  }
+  .vid-preview img { width: 100%; display: block; }
+
+  .vid-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+  .group { display: flex; flex-direction: column; gap: 8px; }
+
+  .group__title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-3);
+  }
+
+  .group__head {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .group__counter {
+    font-size: 13px; font-weight: 500; color: var(--text-4);
+  }
+
+  /* Thumbnail upload — compact */
+  .drop-compact {
+    border: 2px dashed var(--border); border-radius: var(--r);
+    padding: 14px; text-align: center;
+    background: var(--bg-2);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .drop-compact:hover { border-color: var(--blue); background: var(--blue-06); }
+
+  .drop-compact__text {
+    font-size: 12px; color: var(--text-3); margin-bottom: 12px; line-height: 1.4;
+  }
+
+  .drop-compact__row {
+    display: flex; justify-content: center; gap: 12px;
+  }
+
+  .uicon-sm {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .uicon-sm:hover { opacity: 0.75; }
+
+  .uicon-sm__circle {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--blue); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .uicon-sm__circle svg { width: 15px; height: 15px; }
+
+  .uicon-sm__lbl {
+    font-size: 9px; line-height: 1.25; text-align: center;
+    color: var(--text-3);
+  }
+
+  /* ── Shared: search + dropdown + chips ── */
+  .search-w { position: relative; }
+
+  .search-inp {
+    width: 100%; font-family: var(--font); font-size: 14px;
+    padding: 10px 38px 10px 14px;
+    border: 1px solid var(--border); border-radius: var(--r);
+    background: var(--white); color: var(--text); outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .search-inp:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-06); }
+  .search-inp::placeholder { color: var(--text-4); }
+
+  .search-spin {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    width: 15px; height: 15px; border: 2px solid var(--border);
+    border-top-color: var(--blue); border-radius: 50%;
+    animation: spin 0.6s linear infinite; display: none;
+  }
+  .search-spin.on { display: block; }
+  @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+  .ddrop {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r); box-shadow: var(--shadow-dd);
+    z-index: 10; overflow: hidden;
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: all 0.15s ease;
+  }
+  .ddrop.on { opacity: 1; visibility: visible; transform: translateY(0); }
+
+  .ddrop ul { list-style: none; }
+  .ddrop li {
+    padding: 10px 14px; font-size: 14px; color: var(--text);
+    cursor: pointer; transition: background 0.1s;
+  }
+  .ddrop li:hover { background: var(--bg); }
+
+  .info-box {
+    background: #f5f4f0;
+    border-radius: var(--r);
+    padding: 14px 16px; font-size: 16px; line-height: 1.5;
+    color: var(--text-2);
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue); color: #fff;
+    font-size: 13px; font-weight: 500;
+    padding: 6px 12px; border-radius: 6px; max-width: 100%;
+  }
+  .chip__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chip__x {
+    border: none; background: none;
+    color: rgba(255,255,255,0.7); cursor: pointer;
+    font-size: 15px; padding: 0; line-height: 1; display: inline-flex;
+    transition: color 0.1s;
+  }
+  .chip__x:hover { color: #fff; }
+
+  /* Reset image button */
+  .btn--reset {
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    color: var(--text-3); background: none; border: 1px solid var(--border);
+    border-radius: var(--r); padding: 8px 16px; cursor: pointer;
+    transition: all 0.15s; margin-top: 8px;
+  }
+  .btn--reset:hover { color: var(--text); border-color: var(--text-4); }
+
+  /* ── Tag sub-modal ── */
+  .dialog--tag .dialog__body { padding: 16px 24px 24px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 599px) {
+    body { padding: 16px; }
+    .overlay { padding: 0; }
+    .dialog {
+      max-width: none !important; width: 100%;
+      height: 100%; border-radius: 0;
+      max-height: none !important;
+    }
+    .dialog__body { flex: 1; overflow-y: auto; }
+    .dialog__foot {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .img-layout { flex-direction: column; gap: 20px; }
+    .sidebar { width: 100%; }
+    .dialog--img { min-width: 0; }
+    .vid-layout { grid-template-columns: 1fr; gap: 20px; }
+  }
+
+  @media (min-width: 600px) and (max-width: 860px) {
+    .sidebar { width: 220px; }
+    .vid-layout { grid-template-columns: 200px 1fr; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ OUTER BLOCK ═══ -->
+<div class="media-block">
+  <div class="media-block__head">
+    <span class="section-label">Add Media to the Post <span class="help-icon">?</span></span>
+    <button class="btn btn--blue">+ Add Media</button>
+  </div>
+  <div class="thumbs">
+    <div class="thumb">
+      <img src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop" alt="">
+      <span class="thumb__badge">Photo</span>
+      <button class="thumb__remove">&times;</button>
+      <button class="thumb__edit" id="openImg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    </div>
+    <div class="thumb">
+      <img src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop" alt="">
+      <span class="thumb__badge">Video</span>
+      <button class="thumb__remove">&times;</button>
+      <div class="thumb__play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      <button class="thumb__edit" id="openVid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Demo: aspect ratio toggle -->
+<div class="ratio-toggle">
+  <button class="ratio-btn active" data-ratio="square">Square 1:1</button>
+  <button class="ratio-btn" data-ratio="story">Story 9:16</button>
+  <button class="ratio-btn" data-ratio="landscape">Landscape 16:9</button>
+</div>
+
+<!-- ═══ EDIT IMAGE MODAL ═══ -->
+<div class="overlay overlay--main" id="imgOvl">
+  <div class="dialog dialog--img">
+    <div class="dialog__head">
+      <div class="dialog__title">Edit Image</div>
+      <button class="close-x" data-close="imgOvl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="dialog__body">
+      <div class="img-layout">
+        <div class="photo-wrap">
+          <div class="photo-box" id="photoBox">
+            <img id="photoImg" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=800&h=800&fit=crop" alt="Photo">
+          </div>
+        </div>
+        <div class="sidebar">
+          <div class="group">
+            <div class="group__title">Tag People</div>
+            <div class="info-box">Click anywhere on the photo to place a tag. You can drag tags to reposition them.</div>
+          </div>
+          <div class="group">
+            <div class="group__head">
+              <label class="group__title" for="altInp">Alt Text</label>
+              <span class="group__counter" id="altCnt">1000</span>
+            </div>
+            <textarea class="inp" id="altInp" placeholder="Describe this image for accessibility..." maxlength="1000" rows="4"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog__foot">
+      <button class="btn btn--done" data-close="imgOvl">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAG SUB-MODAL ═══ -->
+<div class="overlay overlay--sub" id="tagOvl">
+  <div class="dialog dialog--tag">
+    <div class="dialog__head">
+      <div class="dialog__title">Tag People</div>
+      <button class="close-x" data-close="tagOvl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="dialog__body">
+      <div class="search-w" id="subWrap">
+        <input type="text" class="search-inp" id="subInp" placeholder="Enter exact username" maxlength="30" autocomplete="off" spellcheck="false">
+        <div class="search-spin" id="subSpin"></div>
+        <div class="ddrop" id="subDrop"><ul id="subList"></ul></div>
+      </div>
+      <div class="info-box" style="margin-top:10px;">Enter the exact Instagram username. Only public business or creator accounts can be tagged.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EDIT VIDEO MODAL ═══ -->
+<div class="overlay overlay--main" id="vidOvl">
+  <div class="dialog dialog--vid">
+    <div class="dialog__head">
+      <div class="dialog__title">Edit Video</div>
+      <button class="close-x" data-close="vidOvl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="dialog__body">
+      <div class="vid-layout">
+        <div>
+          <div class="vid-preview" id="vidPreview">
+            <img id="vidPreviewImg" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600&h=900&fit=crop" alt="">
+            <div class="thumb__play" id="vidPlayIcon"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+          </div>
+          <button class="btn--reset" id="vidResetImg" style="display:none;width:100%;">Reset Image</button>
+        </div>
+        <div class="vid-sidebar">
+          <div class="group">
+            <div class="group__head">
+              <label class="group__title" for="vidTitle">Video Title</label>
+              <span class="group__counter" id="vidTitleCnt">100</span>
+            </div>
+            <input type="text" class="inp" id="vidTitle" placeholder="Enter video title..." maxlength="100">
+          </div>
+
+          <div class="group">
+            <div class="group__title">Video Thumbnail</div>
+            <div class="drop-compact" id="dropZone">
+              <div class="drop-compact__text">Drop files here or use one of the methods below</div>
+              <div class="drop-compact__row">
+                <label class="uicon-sm">
+                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                  <span class="uicon-sm__lbl">Upload<br>Media / PDF</span>
+                  <input type="file" accept="image/*" id="thumbFile" style="display:none">
+                </label>
+                <div class="uicon-sm">
+                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+                  <span class="uicon-sm__lbl">My<br>Library</span>
+                </div>
+                <div class="uicon-sm">
+                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+                  <span class="uicon-sm__lbl">Find Free<br>Images</span>
+                </div>
+                <div class="uicon-sm">
+                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
+                  <span class="uicon-sm__lbl">Past from<br>URL</span>
+                </div>
+                <div class="uicon-sm">
+                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+                  <span class="uicon-sm__lbl">Design in<br>Canva</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="group__title">Tag People</div>
+            <div class="search-w" id="vtagWrap">
+              <input type="text" class="search-inp" id="vtagInp" placeholder="Enter exact username" maxlength="30" autocomplete="off" spellcheck="false">
+              <div class="search-spin" id="vtagSpin"></div>
+              <div class="ddrop" id="vtagDrop"><ul id="vtagList"></ul></div>
+            </div>
+            <div class="info-box">Enter the exact Instagram username. Only public business or creator accounts can be tagged.</div>
+            <div class="chips" id="vtagChips"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog__foot">
+      <button class="btn btn--done" data-close="vidOvl">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  const gen = q => {
+    const c = q.replace(/^@/,'').toLowerCase().trim();
+    return c ? ['@'+c, '@'+c+'_official', '@'+c+'.photo'] : [];
+  };
+
+  // ── Modal system ──
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $(btn.dataset.close).classList.remove('open');
+      if (!document.querySelector('.overlay.open')) document.body.style.overflow = '';
+    });
+  });
+
+  document.querySelectorAll('.overlay').forEach(ovl => {
+    ovl.addEventListener('click', e => {
+      if (e.target === ovl) {
+        ovl.classList.remove('open');
+        if (!document.querySelector('.overlay.open')) document.body.style.overflow = '';
+      }
+    });
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('tagOvl').classList.contains('open')) { $('tagOvl').classList.remove('open'); return; }
+    const openOvl = document.querySelector('.overlay--main.open');
+    if (openOvl) { openOvl.classList.remove('open'); document.body.style.overflow = ''; }
+  });
+
+  function openOvl(id) {
+    $(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  $('openImg').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
+  $('openVid').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl'); });
+
+  // ── IMAGE EDIT ──
+  const photoBox = $('photoBox');
+  const altInp = $('altInp');
+  const altCnt = $('altCnt');
+
+  let pTags = [], pendXY = null;
+
+  altInp.addEventListener('input', () => {
+    altCnt.textContent = 1000 - altInp.value.length;
+  });
+
+  // Video title counter
+  $('vidTitle').addEventListener('input', () => {
+    $('vidTitleCnt').textContent = 100 - $('vidTitle').value.length;
+  });
+
+
+  // Click on photo → open tag sub-modal
+  photoBox.addEventListener('click', e => {
+    if (e.target.closest('.ptag')) return; // don't open if clicking tag
+    const r = photoBox.getBoundingClientRect();
+    pendXY = {
+      x: ((e.clientX - r.left) / r.width) * 100,
+      y: ((e.clientY - r.top) / r.height) * 100
+    };
+    openOvl('tagOvl');
+    $('subInp').value = '';
+    $('subDrop').classList.remove('on');
+    setTimeout(() => $('subInp').focus(), 120);
+  });
+
+  // Tag search
+  let subT;
+  $('subInp').addEventListener('input', () => {
+    const v = $('subInp').value.trim();
+    clearTimeout(subT);
+    $('subDrop').classList.remove('on');
+    if (v.length < 2) { $('subSpin').classList.remove('on'); return; }
+    $('subSpin').classList.add('on');
+    subT = setTimeout(() => {
+      $('subSpin').classList.remove('on');
+      const ul = $('subList');
+      ul.innerHTML = '';
+      gen(v).forEach(h => {
+        const li = document.createElement('li');
+        li.textContent = h;
+        li.addEventListener('click', () => {
+          if (pendXY) pTags.push({ h, x: pendXY.x, y: pendXY.y });
+          renderPTags();
+          $('tagOvl').classList.remove('open');
+          pendXY = null;
+        });
+        ul.appendChild(li);
+      });
+      $('subDrop').classList.add('on');
+    }, 500);
+  });
+
+  // ── Draggable photo tags ──
+  let dragIdx = -1, dragOff = { x:0, y:0 };
+
+  function onDragStart(e, idx) {
+    e.preventDefault();
+    e.stopPropagation();
+    dragIdx = idx;
+    const touch = e.touches ? e.touches[0] : e;
+    const r = photoBox.getBoundingClientRect();
+    const tagX = (pTags[idx].x / 100) * r.width;
+    const tagY = (pTags[idx].y / 100) * r.height;
+    dragOff.x = touch.clientX - (r.left + tagX);
+    dragOff.y = touch.clientY - (r.top + tagY);
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', onDragEnd);
+    document.addEventListener('touchmove', onDragMove, { passive: false });
+    document.addEventListener('touchend', onDragEnd);
+  }
+
+  function onDragMove(e) {
+    if (dragIdx < 0) return;
+    e.preventDefault();
+    const touch = e.touches ? e.touches[0] : e;
+    const r = photoBox.getBoundingClientRect();
+    let nx = ((touch.clientX - dragOff.x - r.left) / r.width) * 100;
+    let ny = ((touch.clientY - dragOff.y - r.top) / r.height) * 100;
+    nx = Math.max(2, Math.min(98, nx));
+    ny = Math.max(2, Math.min(98, ny));
+    pTags[dragIdx].x = nx;
+    pTags[dragIdx].y = ny;
+    // Direct DOM update for smoothness
+    const el = photoBox.querySelectorAll('.ptag')[dragIdx];
+    if (el) { el.style.left = nx + '%'; el.style.top = ny + '%'; }
+  }
+
+  function onDragEnd() {
+    dragIdx = -1;
+    document.removeEventListener('mousemove', onDragMove);
+    document.removeEventListener('mouseup', onDragEnd);
+    document.removeEventListener('touchmove', onDragMove);
+    document.removeEventListener('touchend', onDragEnd);
+  }
+
+  function renderPTags() {
+    photoBox.querySelectorAll('.ptag').forEach(el => el.remove());
+    pTags.forEach((t, i) => {
+      const d = document.createElement('div');
+      d.className = 'ptag';
+      d.style.left = t.x + '%';
+      d.style.top = t.y + '%';
+      d.innerHTML = `${t.h} <button class="ptag__x">&times;</button>`;
+      d.querySelector('.ptag__x').addEventListener('click', e => {
+        e.stopPropagation(); pTags.splice(i, 1); renderPTags();
+      });
+      // Drag
+      d.addEventListener('mousedown', e => onDragStart(e, i));
+      d.addEventListener('touchstart', e => onDragStart(e, i), { passive: false });
+      // Prevent click-through to photo
+      d.addEventListener('click', e => e.stopPropagation());
+      photoBox.appendChild(d);
+    });
+  }
+
+  // ── VIDEO EDIT ──
+  let vTags = [];
+  let vtT;
+
+  $('vtagInp').addEventListener('input', () => {
+    const v = $('vtagInp').value.trim();
+    clearTimeout(vtT);
+    $('vtagDrop').classList.remove('on');
+    if (v.length < 2) { $('vtagSpin').classList.remove('on'); return; }
+    $('vtagSpin').classList.add('on');
+    vtT = setTimeout(() => {
+      $('vtagSpin').classList.remove('on');
+      const ul = $('vtagList');
+      ul.innerHTML = '';
+      gen(v).forEach(h => {
+        const li = document.createElement('li');
+        li.textContent = h;
+        li.addEventListener('click', () => {
+          if (!vTags.includes(h)) vTags.push(h);
+          $('vtagInp').value = '';
+          $('vtagDrop').classList.remove('on');
+          renderVTags();
+        });
+        ul.appendChild(li);
+      });
+      $('vtagDrop').classList.add('on');
+    }, 500);
+  });
+
+  function renderVTags() {
+    const c = $('vtagChips');
+    c.innerHTML = '';
+    vTags.forEach((h, i) => {
+      const s = document.createElement('span');
+      s.className = 'chip';
+      s.innerHTML = `<span class="chip__text">${h}</span><button class="chip__x">&times;</button>`;
+      s.querySelector('.chip__x').addEventListener('click', () => { vTags.splice(i, 1); renderVTags(); });
+      c.appendChild(s);
+    });
+  }
+
+  // Thumbnail upload → replaces vid-preview image
+  const origVidSrc = $('vidPreviewImg').src;
+  $('thumbFile').addEventListener('change', e => {
+    const f = e.target.files[0]; if (!f) return;
+    $('vidPreviewImg').src = URL.createObjectURL(f);
+    $('vidPlayIcon').style.display = 'none';
+    $('vidResetImg').style.display = '';
+  });
+
+  $('vidResetImg').addEventListener('click', () => {
+    $('vidPreviewImg').src = origVidSrc;
+    $('vidPlayIcon').style.display = '';
+    $('vidResetImg').style.display = 'none';
+    $('thumbFile').value = '';
+  });
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', e => {
+    if (!$('subWrap').contains(e.target)) $('subDrop').classList.remove('on');
+    if (!$('vtagWrap').contains(e.target)) $('vtagDrop').classList.remove('on');
+  });
+
+  // ── Ratio switcher ──
+  const ratioMap = {
+    square:    'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=800&h=800&fit=crop',
+    story:     'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600&h=1067&fit=crop',
+    landscape: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=1000&h=563&fit=crop',
+  };
+
+  function setRatio(r) {
+    const src = ratioMap[r] || ratioMap.square;
+    $('photoImg').src = src;
+    // Also update video preview
+    $('vidPreviewImg').src = src;
+    $('vidPlayIcon').style.display = '';
+    $('vidResetImg').style.display = 'none';
+    pTags = [];
+    renderPTags();
+    document.querySelectorAll('.ratio-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.ratio === r);
+    });
+  }
+
+  document.querySelectorAll('.ratio-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      setRatio(btn.dataset.ratio);
+    });
+  });
+})();
+</script>
+</body>
+</html>
