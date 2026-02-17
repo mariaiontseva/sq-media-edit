@@ -472,6 +472,41 @@
   /* ── Tag sub-modal ── */
   .dialog--tag .dialog__body { padding: 16px 24px 24px; }
 
+  /* ── Thumb sub-modal ── */
+  .dialog--thumb { max-width: 520px; }
+
+  .drop-zone-lg {
+    border: 2px dashed var(--blue); border-radius: var(--r-lg);
+    padding: 32px 24px; text-align: center;
+    background: var(--white);
+  }
+
+  .drop-zone-lg__text {
+    font-size: 15px; color: var(--text-2); margin-bottom: 24px; line-height: 1.4;
+  }
+
+  .drop-zone-lg__row {
+    display: flex; justify-content: center; gap: 20px;
+  }
+
+  .uicon-lg {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .uicon-lg:hover { opacity: 0.75; }
+
+  .uicon-lg__circle {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--blue); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .uicon-lg__circle svg { width: 20px; height: 20px; }
+
+  .uicon-lg__lbl {
+    font-size: 12px; line-height: 1.3; text-align: center;
+    color: var(--text-2);
+  }
+
   /* ── Responsive ── */
   @media (max-width: 599px) {
     body { padding: 16px; }
@@ -620,7 +655,7 @@
   </div>
 </div>
 
-<!-- ═══ EDIT VIDEO MODAL ═══ -->
+<!-- ═══ EDIT VIDEO MODAL — V1 (button → sub-modal) ═══ -->
 <div class="overlay overlay--main" id="vidOvl">
   <div class="dialog dialog--vid">
     <div class="dialog__head">
@@ -649,7 +684,98 @@
 
           <div class="group">
             <div class="group__title">Video Thumbnail</div>
-            <div class="drop-compact" id="dropZone">
+            <button class="btn btn--blue" id="openThumbModal" style="align-self:flex-start;">Add Thumbnail</button>
+          </div>
+
+          <div class="group">
+            <div class="group__title">Tag People</div>
+            <div class="search-w" id="vtagWrap">
+              <input type="text" class="search-inp" id="vtagInp" placeholder="Enter exact username" maxlength="30" autocomplete="off" spellcheck="false">
+              <div class="search-spin" id="vtagSpin"></div>
+              <div class="ddrop" id="vtagDrop"><ul id="vtagList"></ul></div>
+            </div>
+            <div class="info-box">Enter the exact Instagram username. Only public business or creator accounts can be tagged.</div>
+            <div class="chips" id="vtagChips"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog__foot">
+      <button class="btn btn--done" data-close="vidOvl">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADD MEDIA SUB-MODAL (V1 thumbnail) ═══ -->
+<div class="overlay overlay--sub" id="thumbOvl">
+  <div class="dialog dialog--thumb">
+    <div class="dialog__head">
+      <div class="dialog__title">Add Media</div>
+      <button class="close-x" data-close="thumbOvl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="dialog__body">
+      <div class="drop-zone-lg">
+        <div class="drop-zone-lg__text">Drop files here or use one of the methods below</div>
+        <div class="drop-zone-lg__row">
+          <label class="uicon-lg">
+            <div class="uicon-lg__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <span class="uicon-lg__lbl">Upload<br>Media</span>
+            <input type="file" accept="image/*" id="thumbFileV1" style="display:none">
+          </label>
+          <div class="uicon-lg">
+            <div class="uicon-lg__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+            <span class="uicon-lg__lbl">My<br>Library</span>
+          </div>
+          <div class="uicon-lg">
+            <div class="uicon-lg__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <span class="uicon-lg__lbl">Find Free<br>Images</span>
+          </div>
+          <div class="uicon-lg">
+            <div class="uicon-lg__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
+            <span class="uicon-lg__lbl">Past from<br>URL</span>
+          </div>
+          <div class="uicon-lg">
+            <div class="uicon-lg__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+            <span class="uicon-lg__lbl">Design in<br>Canva</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EDIT VIDEO MODAL — V2 (inline drop zone) ═══ -->
+<div class="overlay overlay--main" id="vidOvl2">
+  <div class="dialog dialog--vid">
+    <div class="dialog__head">
+      <div class="dialog__title">Edit Video</div>
+      <button class="close-x" data-close="vidOvl2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="dialog__body">
+      <div class="vid-layout">
+        <div>
+          <div class="vid-preview" id="vidPreview2">
+            <img id="vidPreviewImg2" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600&h=900&fit=crop" alt="">
+            <div class="thumb__play" id="vidPlayIcon2"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+          </div>
+          <button class="btn--reset" id="vidResetImg2" style="display:none;width:100%;">Reset Image</button>
+        </div>
+        <div class="vid-sidebar">
+          <div class="group">
+            <div class="group__head">
+              <label class="group__title" for="vidTitle2">Video Title</label>
+              <span class="group__counter" id="vidTitleCnt2">100</span>
+            </div>
+            <input type="text" class="inp" id="vidTitle2" placeholder="Enter video title..." maxlength="100">
+          </div>
+
+          <div class="group">
+            <div class="group__title">Video Thumbnail</div>
+            <div class="drop-compact" id="dropZone2">
               <div class="drop-compact__text">Drop files here or use one of the methods below</div>
               <div class="drop-compact__row">
                 <label class="uicon-sm">
@@ -679,19 +805,19 @@
 
           <div class="group">
             <div class="group__title">Tag People</div>
-            <div class="search-w" id="vtagWrap">
-              <input type="text" class="search-inp" id="vtagInp" placeholder="Enter exact username" maxlength="30" autocomplete="off" spellcheck="false">
-              <div class="search-spin" id="vtagSpin"></div>
-              <div class="ddrop" id="vtagDrop"><ul id="vtagList"></ul></div>
+            <div class="search-w" id="vtagWrap2">
+              <input type="text" class="search-inp" id="vtagInp2" placeholder="Enter exact username" maxlength="30" autocomplete="off" spellcheck="false">
+              <div class="search-spin" id="vtagSpin2"></div>
+              <div class="ddrop" id="vtagDrop2"><ul id="vtagList2"></ul></div>
             </div>
             <div class="info-box">Enter the exact Instagram username. Only public business or creator accounts can be tagged.</div>
-            <div class="chips" id="vtagChips"></div>
+            <div class="chips" id="vtagChips2"></div>
           </div>
         </div>
       </div>
     </div>
     <div class="dialog__foot">
-      <button class="btn btn--done" data-close="vidOvl">Done</button>
+      <button class="btn btn--done" data-close="vidOvl2">Done</button>
     </div>
   </div>
 </div>
@@ -723,6 +849,7 @@
 
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    if ($('thumbOvl').classList.contains('open')) { $('thumbOvl').classList.remove('open'); return; }
     if ($('tagOvl').classList.contains('open')) { $('tagOvl').classList.remove('open'); return; }
     const openOvl = document.querySelector('.overlay--main.open');
     if (openOvl) { openOvl.classList.remove('open'); document.body.style.overflow = ''; }
@@ -736,7 +863,10 @@
   $('openImg').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
   $('openVid').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl'); });
   $('openImg2').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
-  $('openVid2').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl'); });
+  $('openVid2').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl2'); });
+
+  // V1: Add Thumbnail button → opens sub-modal
+  $('openThumbModal').addEventListener('click', () => openOvl('thumbOvl'));
 
   // ── IMAGE EDIT ──
   const photoBox = $('photoBox');
@@ -900,19 +1030,79 @@
     });
   }
 
-  // Thumbnail upload → replaces vid-preview image
-  const origVidSrc = $('vidPreviewImg').src;
-  $('thumbFile').addEventListener('change', e => {
+
+  // ── V1: Thumbnail file upload via sub-modal ──
+  const origVidSrcV1 = $('vidPreviewImg').src;
+  $('thumbFileV1').addEventListener('change', e => {
     const f = e.target.files[0]; if (!f) return;
     $('vidPreviewImg').src = URL.createObjectURL(f);
     $('vidPlayIcon').style.display = 'none';
     $('vidResetImg').style.display = '';
+    $('thumbOvl').classList.remove('open');
   });
-
   $('vidResetImg').addEventListener('click', () => {
-    $('vidPreviewImg').src = origVidSrc;
+    $('vidPreviewImg').src = origVidSrcV1;
     $('vidPlayIcon').style.display = '';
     $('vidResetImg').style.display = 'none';
+    $('thumbFileV1').value = '';
+  });
+
+  // ── V2: Video title counter ──
+  $('vidTitle2').addEventListener('input', () => {
+    $('vidTitleCnt2').textContent = 100 - $('vidTitle2').value.length;
+  });
+
+  // ── V2: Tag search ──
+  let vTags2 = [], vtT2;
+  $('vtagInp2').addEventListener('input', () => {
+    const v = $('vtagInp2').value.trim();
+    clearTimeout(vtT2);
+    $('vtagDrop2').classList.remove('on');
+    if (v.length < 2) { $('vtagSpin2').classList.remove('on'); return; }
+    $('vtagSpin2').classList.add('on');
+    vtT2 = setTimeout(() => {
+      $('vtagSpin2').classList.remove('on');
+      const ul = $('vtagList2');
+      ul.innerHTML = '';
+      gen(v).forEach(h => {
+        const li = document.createElement('li');
+        li.textContent = h;
+        li.addEventListener('click', () => {
+          if (!vTags2.includes(h)) vTags2.push(h);
+          $('vtagInp2').value = '';
+          $('vtagDrop2').classList.remove('on');
+          renderVTags2();
+        });
+        ul.appendChild(li);
+      });
+      $('vtagDrop2').classList.add('on');
+    }, 500);
+  });
+
+  function renderVTags2() {
+    const c = $('vtagChips2');
+    c.innerHTML = '';
+    vTags2.forEach((h, i) => {
+      const s = document.createElement('span');
+      s.className = 'chip';
+      s.innerHTML = `<span class="chip__text">${h}</span><button class="chip__x">&times;</button>`;
+      s.querySelector('.chip__x').addEventListener('click', () => { vTags2.splice(i, 1); renderVTags2(); });
+      c.appendChild(s);
+    });
+  }
+
+  // ── V2: Thumbnail upload ──
+  const origVidSrc2 = $('vidPreviewImg2').src;
+  $('thumbFile').addEventListener('change', e => {
+    const f = e.target.files[0]; if (!f) return;
+    $('vidPreviewImg2').src = URL.createObjectURL(f);
+    $('vidPlayIcon2').style.display = 'none';
+    $('vidResetImg2').style.display = '';
+  });
+  $('vidResetImg2').addEventListener('click', () => {
+    $('vidPreviewImg2').src = origVidSrc2;
+    $('vidPlayIcon2').style.display = '';
+    $('vidResetImg2').style.display = 'none';
     $('thumbFile').value = '';
   });
 
@@ -920,6 +1110,7 @@
   document.addEventListener('click', e => {
     if (!$('subWrap').contains(e.target)) $('subDrop').classList.remove('on');
     if (!$('vtagWrap').contains(e.target)) $('vtagDrop').classList.remove('on');
+    if (!$('vtagWrap2').contains(e.target)) $('vtagDrop2').classList.remove('on');
   });
 
   // ── Ratio switcher ──
