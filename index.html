@@ -670,6 +670,49 @@
   </div>
 </div>
 
+<!-- ═══ EDIT IMAGE MODAL — V2 (sidebar tags, no click-on-photo) ═══ -->
+<div class="overlay overlay--main" id="imgOvl2">
+  <div class="dialog dialog--img">
+    <div class="dialog__head">
+      <div class="dialog__title">Edit Image</div>
+      <button class="close-x" data-close="imgOvl2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="dialog__body">
+      <div class="img-layout">
+        <div class="photo-wrap">
+          <div class="photo-box" id="photoBox2" style="cursor:default;">
+            <img id="photoImg2" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=800&h=800&fit=crop" alt="Photo" style="cursor:default;">
+          </div>
+        </div>
+        <div class="sidebar">
+          <div class="group">
+            <div class="group__title">Tag People</div>
+            <div class="search-w" id="imgTagWrap2">
+              <input type="text" class="search-inp" id="imgTagInp2" placeholder="Enter exact username" maxlength="30" autocomplete="off" spellcheck="false">
+              <div class="search-spin" id="imgTagSpin2"></div>
+              <div class="ddrop" id="imgTagDrop2"><ul id="imgTagList2"></ul></div>
+            </div>
+            <div class="info-box">Enter the exact Instagram username. Only public business or creator accounts can be tagged.</div>
+            <div class="chips" id="imgTagChips2"></div>
+          </div>
+          <div class="group">
+            <div class="group__head">
+              <label class="group__title" for="altInp2">Alt Text</label>
+              <span class="group__counter" id="altCnt2">1000</span>
+            </div>
+            <textarea class="inp" id="altInp2" placeholder="Describe this image for accessibility..." maxlength="1000" rows="4"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog__foot">
+      <button class="btn btn--done" data-close="imgOvl2">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ EDIT VIDEO MODAL — V1 (button → sub-modal) ═══ -->
 <div class="overlay overlay--main" id="vidOvl">
   <div class="dialog dialog--vid">
@@ -877,7 +920,7 @@
 
   $('openImg').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
   $('openVid').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl'); });
-  $('openImg2').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
+  $('openImg2').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl2'); });
   $('openVid2').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl2'); });
 
   // V1: Add Thumbnail button → opens sub-modal
@@ -1136,12 +1179,63 @@
     if (!$('subWrap').contains(e.target)) $('subDrop').classList.remove('on');
     if (!$('vtagWrap').contains(e.target)) $('vtagDrop').classList.remove('on');
     if (!$('vtagWrap2').contains(e.target)) $('vtagDrop2').classList.remove('on');
+    if (!$('imgTagWrap2').contains(e.target)) $('imgTagDrop2').classList.remove('on');
   });
+
+  // ── V2: Image modal (sidebar tags) ──
+  let imgTags2 = [], imgT2;
+
+  $('altInp2').addEventListener('input', () => {
+    $('altCnt2').textContent = 1000 - $('altInp2').value.length;
+    updateImg2Dot();
+  });
+
+  $('imgTagInp2').addEventListener('input', () => {
+    const v = $('imgTagInp2').value.trim();
+    clearTimeout(imgT2);
+    $('imgTagDrop2').classList.remove('on');
+    if (v.length < 2) { $('imgTagSpin2').classList.remove('on'); return; }
+    $('imgTagSpin2').classList.add('on');
+    imgT2 = setTimeout(() => {
+      $('imgTagSpin2').classList.remove('on');
+      const ul = $('imgTagList2');
+      ul.innerHTML = '';
+      gen(v).forEach(h => {
+        const li = document.createElement('li');
+        li.textContent = h;
+        li.addEventListener('click', () => {
+          if (!imgTags2.includes(h)) imgTags2.push(h);
+          $('imgTagInp2').value = '';
+          $('imgTagDrop2').classList.remove('on');
+          renderImgTags2();
+        });
+        ul.appendChild(li);
+      });
+      $('imgTagDrop2').classList.add('on');
+    }, 500);
+  });
+
+  function renderImgTags2() {
+    const c = $('imgTagChips2');
+    c.innerHTML = '';
+    imgTags2.forEach((h, i) => {
+      const s = document.createElement('span');
+      s.className = 'chip';
+      s.innerHTML = `<span class="chip__text">${h}</span><button class="chip__x">&times;</button>`;
+      s.querySelector('.chip__x').addEventListener('click', () => { imgTags2.splice(i, 1); renderImgTags2(); });
+      c.appendChild(s);
+    });
+    updateImg2Dot();
+  }
 
   // ── Green dot indicators ──
   function updateImgDots() {
     const hasChanges = pTags.length > 0 || altInp.value.trim().length > 0;
     $('dotImg1').classList.toggle('on', hasChanges);
+  }
+
+  function updateImg2Dot() {
+    const hasChanges = imgTags2.length > 0 || $('altInp2').value.trim().length > 0;
     $('dotImg2').classList.toggle('on', hasChanges);
   }
 
@@ -1165,7 +1259,8 @@
   function setRatio(r) {
     const src = ratioMap[r] || ratioMap.square;
     $('photoImg').src = src;
-    // Also update video preview
+    $('photoImg2').src = src;
+    // Also update video previews
     $('vidPreviewImg').src = src;
     $('vidPlayIcon').style.display = '';
     $('vidResetImg').style.display = 'none';
