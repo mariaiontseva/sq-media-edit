@@ -170,6 +170,17 @@
   .thumb__edit:hover::after { opacity: 1; transform: translateY(0); }
   .thumb__edit:hover::before { opacity: 1; }
 
+  /* Green dot indicator */
+  .thumb__dot {
+    position: absolute; top: -3px; right: -3px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #34a853;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    display: none; z-index: 3;
+  }
+  .thumb__dot.on { display: block; }
+
   /* Ratio segmented control */
   .ratio-toggle {
     display: inline-flex;
@@ -548,6 +559,7 @@
       <span class="thumb__badge">Photo</span>
       <button class="thumb__remove">&times;</button>
       <button class="thumb__edit" id="openImg">
+        <span class="thumb__dot" id="dotImg1"></span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </button>
     </div>
@@ -557,6 +569,7 @@
       <button class="thumb__remove">&times;</button>
       <div class="thumb__play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
       <button class="thumb__edit" id="openVid">
+        <span class="thumb__dot" id="dotVid1"></span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </button>
     </div>
@@ -576,6 +589,7 @@
       <span class="thumb__badge">Photo</span>
       <button class="thumb__remove">&times;</button>
       <button class="thumb__edit" id="openImg2">
+        <span class="thumb__dot" id="dotImg2"></span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </button>
     </div>
@@ -585,6 +599,7 @@
       <button class="thumb__remove">&times;</button>
       <div class="thumb__play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
       <button class="thumb__edit" id="openVid2">
+        <span class="thumb__dot" id="dotVid2"></span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </button>
     </div>
@@ -877,11 +892,13 @@
 
   altInp.addEventListener('input', () => {
     altCnt.textContent = 1000 - altInp.value.length;
+    updateImgDots();
   });
 
   // Video title counter
   $('vidTitle').addEventListener('input', () => {
     $('vidTitleCnt').textContent = 100 - $('vidTitle').value.length;
+    updateVid1Dot();
   });
 
 
@@ -971,6 +988,7 @@
 
   function renderPTags() {
     photoBox.querySelectorAll('.ptag').forEach(el => el.remove());
+    updateImgDots();
     pTags.forEach((t, i) => {
       const d = document.createElement('div');
       d.className = 'ptag';
@@ -1028,6 +1046,7 @@
       s.querySelector('.chip__x').addEventListener('click', () => { vTags.splice(i, 1); renderVTags(); });
       c.appendChild(s);
     });
+    updateVid1Dot();
   }
 
 
@@ -1039,17 +1058,20 @@
     $('vidPlayIcon').style.display = 'none';
     $('vidResetImg').style.display = '';
     $('thumbOvl').classList.remove('open');
+    updateVid1Dot();
   });
   $('vidResetImg').addEventListener('click', () => {
     $('vidPreviewImg').src = origVidSrcV1;
     $('vidPlayIcon').style.display = '';
     $('vidResetImg').style.display = 'none';
     $('thumbFileV1').value = '';
+    updateVid1Dot();
   });
 
   // ── V2: Video title counter ──
   $('vidTitle2').addEventListener('input', () => {
     $('vidTitleCnt2').textContent = 100 - $('vidTitle2').value.length;
+    updateVid2Dot();
   });
 
   // ── V2: Tag search ──
@@ -1089,6 +1111,7 @@
       s.querySelector('.chip__x').addEventListener('click', () => { vTags2.splice(i, 1); renderVTags2(); });
       c.appendChild(s);
     });
+    updateVid2Dot();
   }
 
   // ── V2: Thumbnail upload ──
@@ -1098,12 +1121,14 @@
     $('vidPreviewImg2').src = URL.createObjectURL(f);
     $('vidPlayIcon2').style.display = 'none';
     $('vidResetImg2').style.display = '';
+    updateVid2Dot();
   });
   $('vidResetImg2').addEventListener('click', () => {
     $('vidPreviewImg2').src = origVidSrc2;
     $('vidPlayIcon2').style.display = '';
     $('vidResetImg2').style.display = 'none';
     $('thumbFile').value = '';
+    updateVid2Dot();
   });
 
   // Close dropdowns on outside click
@@ -1112,6 +1137,23 @@
     if (!$('vtagWrap').contains(e.target)) $('vtagDrop').classList.remove('on');
     if (!$('vtagWrap2').contains(e.target)) $('vtagDrop2').classList.remove('on');
   });
+
+  // ── Green dot indicators ──
+  function updateImgDots() {
+    const hasChanges = pTags.length > 0 || altInp.value.trim().length > 0;
+    $('dotImg1').classList.toggle('on', hasChanges);
+    $('dotImg2').classList.toggle('on', hasChanges);
+  }
+
+  function updateVid1Dot() {
+    const hasChanges = $('vidTitle').value.trim().length > 0 || vTags.length > 0 || $('vidResetImg').style.display !== 'none';
+    $('dotVid1').classList.toggle('on', hasChanges);
+  }
+
+  function updateVid2Dot() {
+    const hasChanges = $('vidTitle2').value.trim().length > 0 || vTags2.length > 0 || $('vidResetImg2').style.display !== 'none';
+    $('dotVid2').classList.toggle('on', hasChanges);
+  }
 
   // ── Ratio switcher ──
   const ratioMap = {
