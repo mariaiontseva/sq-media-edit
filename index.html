@@ -57,6 +57,30 @@
     width: 100%; max-width: 620px;
     font-size: 13px; font-weight: 600; color: var(--text-3);
     text-transform: uppercase; letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .version-badge {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    padding: 3px 10px; border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .version-badge--go {
+    background: #e6f4ea; color: #1e7e34;
+  }
+  .version-badge--no {
+    background: #fce8e6; color: #c5221f;
+  }
+
+  .version-label--struck {
+    text-decoration: line-through;
+    opacity: 0.45;
+  }
+
+  .media-block--dimmed {
+    opacity: 0.4;
+    pointer-events: none;
+    position: relative;
   }
 
   /* ── Outer media block ── */
@@ -547,7 +571,7 @@
 <body>
 
 <!-- ═══ VERSION 1 — PREFERABLE ═══ -->
-<div class="version-label">Version 1 — Preferable</div>
+<div class="version-label">Version 1 — Preferable <span class="version-badge version-badge--go">For Development</span></div>
 <div class="media-block">
   <div class="media-block__head">
     <span class="section-label">Add Media to the Post <span class="help-icon">?</span></span>
@@ -577,8 +601,8 @@
 </div>
 
 <!-- ═══ VERSION 2 ═══ -->
-<div class="version-label">Version 2</div>
-<div class="media-block">
+<div class="version-label version-label--struck">Version 2 <span class="version-badge version-badge--no">Not for Development</span></div>
+<div class="media-block media-block--dimmed">
   <div class="media-block__head">
     <span class="section-label">Add Media to the Post <span class="help-icon">?</span></span>
     <button class="btn btn--blue">+ Add Media</button>
