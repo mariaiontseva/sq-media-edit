@@ -328,8 +328,8 @@
     background: #3d4663;
     color: #fff;
     font-size: 16px; font-weight: 600; letter-spacing: 0.01em;
-    padding: 8px 8px 8px 14px;
-    border-radius: 6px;
+    height: 36px; padding: 0 4px 0 14px;
+    border-radius: 8px;
     transform: translate(-50%, -50%);
     display: inline-flex; align-items: center; gap: 7px;
     white-space: nowrap; z-index: 2;
@@ -343,10 +343,10 @@
 
   .ptag__x {
     border: none; background: none;
-    color: rgba(255,255,255,0.6);
-    cursor: pointer; font-size: 14px; padding: 4px 5px;
-    line-height: 1; display: inline-flex;
-    transition: all 0.15s; border-radius: 4px;
+    color: rgba(255,255,255,0.55);
+    cursor: pointer; font-size: 18px; width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s; border-radius: 6px; line-height: 1;
   }
   .ptag__x:hover { color: #fff; background: #1a1a2e; }
 
@@ -481,17 +481,18 @@
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 
   .chip {
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
     background: #3d4663; color: #fff;
     font-size: 13px; font-weight: 500;
-    padding: 6px 6px 6px 12px; border-radius: 6px; max-width: 100%;
+    height: 36px; padding: 0 4px 0 14px; border-radius: 8px; max-width: 100%;
   }
   .chip__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .chip__x {
     border: none; background: none;
-    color: rgba(255,255,255,0.6); cursor: pointer;
-    font-size: 13px; padding: 4px 5px; line-height: 1; display: inline-flex;
-    transition: all 0.15s; border-radius: 4px;
+    color: rgba(255,255,255,0.55); cursor: pointer;
+    font-size: 18px; width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s; border-radius: 6px; line-height: 1;
   }
   .chip__x:hover { color: #fff; background: #1a1a2e; }
 
