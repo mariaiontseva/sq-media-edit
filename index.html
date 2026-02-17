@@ -53,6 +53,12 @@
     gap: 24px;
   }
 
+  .version-label {
+    width: 100%; max-width: 620px;
+    font-size: 13px; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
   /* ── Outer media block ── */
   .media-block {
     width: 100%; max-width: 620px;
@@ -494,7 +500,8 @@
 </head>
 <body>
 
-<!-- ═══ OUTER BLOCK ═══ -->
+<!-- ═══ VERSION 1 — PREFERABLE ═══ -->
+<div class="version-label">Version 1 — Preferable</div>
 <div class="media-block">
   <div class="media-block__head">
     <span class="section-label">Add Media to the Post <span class="help-icon">?</span></span>
@@ -515,6 +522,34 @@
       <button class="thumb__remove">&times;</button>
       <div class="thumb__play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
       <button class="thumb__edit" id="openVid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VERSION 2 ═══ -->
+<div class="version-label">Version 2</div>
+<div class="media-block">
+  <div class="media-block__head">
+    <span class="section-label">Add Media to the Post <span class="help-icon">?</span></span>
+    <button class="btn btn--blue">+ Add Media</button>
+  </div>
+  <div class="thumbs">
+    <div class="thumb">
+      <img src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop" alt="">
+      <span class="thumb__badge">Photo</span>
+      <button class="thumb__remove">&times;</button>
+      <button class="thumb__edit" id="openImg2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    </div>
+    <div class="thumb">
+      <img src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop" alt="">
+      <span class="thumb__badge">Video</span>
+      <button class="thumb__remove">&times;</button>
+      <div class="thumb__play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+      <button class="thumb__edit" id="openVid2">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </button>
     </div>
@@ -700,6 +735,8 @@
 
   $('openImg').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
   $('openVid').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl'); });
+  $('openImg2').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
+  $('openVid2').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl'); });
 
   // ── IMAGE EDIT ──
   const photoBox = $('photoBox');
