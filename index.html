@@ -53,36 +53,6 @@
     gap: 24px;
   }
 
-  .version-label {
-    width: 100%; max-width: 620px;
-    font-size: 13px; font-weight: 600; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.05em;
-    display: flex; align-items: center; gap: 10px;
-  }
-
-  .version-badge {
-    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
-    padding: 3px 10px; border-radius: 4px;
-    text-transform: uppercase;
-  }
-  .version-badge--go {
-    background: #e6f4ea; color: #1e7e34;
-  }
-  .version-badge--no {
-    background: #fce8e6; color: #c5221f;
-  }
-
-  .version-label--struck {
-    text-decoration: line-through;
-    opacity: 0.45;
-  }
-
-  .media-block--dimmed {
-    opacity: 0.4;
-    pointer-events: none;
-    position: relative;
-  }
-
   /* ── Outer media block ── */
   .media-block {
     width: 100%; max-width: 620px;
@@ -398,41 +368,6 @@
     font-size: 13px; font-weight: 500; color: var(--text-4);
   }
 
-  /* Thumbnail upload — compact */
-  .drop-compact {
-    border: 2px dashed var(--border); border-radius: var(--r);
-    padding: 14px; text-align: center;
-    background: var(--bg-2);
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .drop-compact:hover { border-color: var(--blue); background: var(--blue-06); }
-
-  .drop-compact__text {
-    font-size: 12px; color: var(--text-3); margin-bottom: 12px; line-height: 1.4;
-  }
-
-  .drop-compact__row {
-    display: flex; justify-content: center; gap: 12px;
-  }
-
-  .uicon-sm {
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    cursor: pointer; transition: opacity 0.15s;
-  }
-  .uicon-sm:hover { opacity: 0.75; }
-
-  .uicon-sm__circle {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--blue); color: #fff;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .uicon-sm__circle svg { width: 15px; height: 15px; }
-
-  .uicon-sm__lbl {
-    font-size: 9px; line-height: 1.25; text-align: center;
-    color: var(--text-3);
-  }
-
   /* ── Shared: search + dropdown + chips ── */
   .search-w { position: relative; }
 
@@ -573,8 +508,6 @@
 </head>
 <body>
 
-<!-- ═══ VERSION 1 — PREFERABLE ═══ -->
-<div class="version-label">Version 1 — Preferable <span class="version-badge version-badge--go">For Development</span></div>
 <div class="media-block">
   <div class="media-block__head">
     <span class="section-label">Add Media to the Post <span class="help-icon">?</span></span>
@@ -597,36 +530,6 @@
       <div class="thumb__play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
       <button class="thumb__edit" id="openVid">
         <span class="thumb__dot" id="dotVid1"></span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ VERSION 2 ═══ -->
-<div class="version-label"><span class="version-label--struck">Version 2</span> <span class="version-badge version-badge--no">Not for Development</span></div>
-<div class="media-block media-block--dimmed">
-  <div class="media-block__head">
-    <span class="section-label">Add Media to the Post <span class="help-icon">?</span></span>
-    <button class="btn btn--blue">+ Add Media</button>
-  </div>
-  <div class="thumbs">
-    <div class="thumb">
-      <img src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop" alt="">
-      <span class="thumb__badge">Photo</span>
-      <button class="thumb__remove">&times;</button>
-      <button class="thumb__edit" id="openImg2">
-        <span class="thumb__dot" id="dotImg2"></span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
-    </div>
-    <div class="thumb">
-      <img src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop" alt="">
-      <span class="thumb__badge">Video</span>
-      <button class="thumb__remove">&times;</button>
-      <div class="thumb__play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-      <button class="thumb__edit" id="openVid2">
-        <span class="thumb__dot" id="dotVid2"></span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </button>
     </div>
@@ -697,50 +600,7 @@
   </div>
 </div>
 
-<!-- ═══ EDIT IMAGE MODAL — V2 (sidebar tags, no click-on-photo) ═══ -->
-<div class="overlay overlay--main" id="imgOvl2">
-  <div class="dialog dialog--img">
-    <div class="dialog__head">
-      <div class="dialog__title">Edit Image</div>
-      <button class="close-x" data-close="imgOvl2">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="dialog__body">
-      <div class="img-layout">
-        <div class="photo-wrap">
-          <div class="photo-box" id="photoBox2" style="cursor:default;">
-            <img id="photoImg2" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=800&h=800&fit=crop" alt="Photo" style="cursor:default;">
-          </div>
-        </div>
-        <div class="sidebar">
-          <div class="group">
-            <div class="group__title">Tag People</div>
-            <div class="search-w" id="imgTagWrap2">
-              <input type="text" class="search-inp" id="imgTagInp2" placeholder="Enter exact username" maxlength="30" autocomplete="off" spellcheck="false">
-              <div class="search-spin" id="imgTagSpin2"></div>
-              <div class="ddrop" id="imgTagDrop2"><ul id="imgTagList2"></ul></div>
-            </div>
-            <div class="info-box">Enter the exact Instagram username. Only public business or creator accounts can be tagged.</div>
-            <div class="chips" id="imgTagChips2"></div>
-          </div>
-          <div class="group">
-            <div class="group__head">
-              <label class="group__title" for="altInp2">Alt Text</label>
-              <span class="group__counter" id="altCnt2">1000</span>
-            </div>
-            <textarea class="inp" id="altInp2" placeholder="Describe this image for accessibility..." maxlength="1000" rows="4"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="dialog__foot">
-      <button class="btn btn--done" data-close="imgOvl2">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ EDIT VIDEO MODAL — V1 (button → sub-modal) ═══ -->
+<!-- ═══ EDIT VIDEO MODAL ═══ -->
 <div class="overlay overlay--main" id="vidOvl">
   <div class="dialog dialog--vid">
     <div class="dialog__head">
@@ -831,82 +691,6 @@
   </div>
 </div>
 
-<!-- ═══ EDIT VIDEO MODAL — V2 (inline drop zone) ═══ -->
-<div class="overlay overlay--main" id="vidOvl2">
-  <div class="dialog dialog--vid">
-    <div class="dialog__head">
-      <div class="dialog__title">Edit Video</div>
-      <button class="close-x" data-close="vidOvl2">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="dialog__body">
-      <div class="vid-layout">
-        <div>
-          <div class="vid-preview" id="vidPreview2">
-            <img id="vidPreviewImg2" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600&h=900&fit=crop" alt="">
-            <div class="thumb__play" id="vidPlayIcon2"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-          </div>
-          <button class="btn--reset" id="vidResetImg2" style="display:none;width:100%;">Reset Image</button>
-        </div>
-        <div class="vid-sidebar">
-          <div class="group">
-            <div class="group__head">
-              <label class="group__title" for="vidTitle2">Video Title</label>
-              <span class="group__counter" id="vidTitleCnt2">100</span>
-            </div>
-            <input type="text" class="inp" id="vidTitle2" placeholder="Enter video title..." maxlength="100">
-          </div>
-
-          <div class="group">
-            <div class="group__title">Video Thumbnail</div>
-            <div class="drop-compact" id="dropZone2">
-              <div class="drop-compact__text">Drop files here or use one of the methods below</div>
-              <div class="drop-compact__row">
-                <label class="uicon-sm">
-                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-                  <span class="uicon-sm__lbl">Upload<br>Media / PDF</span>
-                  <input type="file" accept="image/*" id="thumbFile" style="display:none">
-                </label>
-                <div class="uicon-sm">
-                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-                  <span class="uicon-sm__lbl">My<br>Library</span>
-                </div>
-                <div class="uicon-sm">
-                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-                  <span class="uicon-sm__lbl">Find Free<br>Images</span>
-                </div>
-                <div class="uicon-sm">
-                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
-                  <span class="uicon-sm__lbl">Past from<br>URL</span>
-                </div>
-                <div class="uicon-sm">
-                  <div class="uicon-sm__circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
-                  <span class="uicon-sm__lbl">Design in<br>Canva</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="group">
-            <div class="group__title">Tag People</div>
-            <div class="search-w" id="vtagWrap2">
-              <input type="text" class="search-inp" id="vtagInp2" placeholder="Enter exact username" maxlength="30" autocomplete="off" spellcheck="false">
-              <div class="search-spin" id="vtagSpin2"></div>
-              <div class="ddrop" id="vtagDrop2"><ul id="vtagList2"></ul></div>
-            </div>
-            <div class="info-box">Enter the exact Instagram username. Only public business or creator accounts can be tagged.</div>
-            <div class="chips" id="vtagChips2"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="dialog__foot">
-      <button class="btn btn--done" data-close="vidOvl2">Done</button>
-    </div>
-  </div>
-</div>
-
 <script>
 (function() {
   const $ = id => document.getElementById(id);
@@ -947,8 +731,6 @@
 
   $('openImg').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
   $('openVid').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl'); });
-  $('openImg2').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl2'); });
-  $('openVid2').addEventListener('click', e => { e.stopPropagation(); openOvl('vidOvl2'); });
 
   // V1: Add Thumbnail button → opens sub-modal
   $('openThumbModal').addEventListener('click', () => openOvl('thumbOvl'));
@@ -1138,122 +920,11 @@
     updateVid1Dot();
   });
 
-  // ── V2: Video title counter ──
-  $('vidTitle2').addEventListener('input', () => {
-    $('vidTitleCnt2').textContent = 100 - $('vidTitle2').value.length;
-    updateVid2Dot();
-  });
-
-  // ── V2: Tag search ──
-  let vTags2 = [], vtT2;
-  $('vtagInp2').addEventListener('input', () => {
-    const v = $('vtagInp2').value.trim();
-    clearTimeout(vtT2);
-    $('vtagDrop2').classList.remove('on');
-    if (v.length < 2) { $('vtagSpin2').classList.remove('on'); return; }
-    $('vtagSpin2').classList.add('on');
-    vtT2 = setTimeout(() => {
-      $('vtagSpin2').classList.remove('on');
-      const ul = $('vtagList2');
-      ul.innerHTML = '';
-      gen(v).forEach(h => {
-        const li = document.createElement('li');
-        li.textContent = h;
-        li.addEventListener('click', () => {
-          if (!vTags2.includes(h)) vTags2.push(h);
-          $('vtagInp2').value = '';
-          $('vtagDrop2').classList.remove('on');
-          renderVTags2();
-        });
-        ul.appendChild(li);
-      });
-      $('vtagDrop2').classList.add('on');
-    }, 500);
-  });
-
-  function renderVTags2() {
-    const c = $('vtagChips2');
-    c.innerHTML = '';
-    vTags2.forEach((h, i) => {
-      const s = document.createElement('span');
-      s.className = 'chip';
-      s.innerHTML = `<span class="chip__text">${h}</span><button class="chip__x">&times;</button>`;
-      s.querySelector('.chip__x').addEventListener('click', () => { vTags2.splice(i, 1); renderVTags2(); });
-      c.appendChild(s);
-    });
-    updateVid2Dot();
-  }
-
-  // ── V2: Thumbnail upload ──
-  const origVidSrc2 = $('vidPreviewImg2').src;
-  $('thumbFile').addEventListener('change', e => {
-    const f = e.target.files[0]; if (!f) return;
-    $('vidPreviewImg2').src = URL.createObjectURL(f);
-    $('vidPlayIcon2').style.display = 'none';
-    $('vidResetImg2').style.display = '';
-    updateVid2Dot();
-  });
-  $('vidResetImg2').addEventListener('click', () => {
-    $('vidPreviewImg2').src = origVidSrc2;
-    $('vidPlayIcon2').style.display = '';
-    $('vidResetImg2').style.display = 'none';
-    $('thumbFile').value = '';
-    updateVid2Dot();
-  });
-
   // Close dropdowns on outside click
   document.addEventListener('click', e => {
     if (!$('subWrap').contains(e.target)) $('subDrop').classList.remove('on');
     if (!$('vtagWrap').contains(e.target)) $('vtagDrop').classList.remove('on');
-    if (!$('vtagWrap2').contains(e.target)) $('vtagDrop2').classList.remove('on');
-    if (!$('imgTagWrap2').contains(e.target)) $('imgTagDrop2').classList.remove('on');
   });
-
-  // ── V2: Image modal (sidebar tags) ──
-  let imgTags2 = [], imgT2;
-
-  $('altInp2').addEventListener('input', () => {
-    $('altCnt2').textContent = 1000 - $('altInp2').value.length;
-    updateImg2Dot();
-  });
-
-  $('imgTagInp2').addEventListener('input', () => {
-    const v = $('imgTagInp2').value.trim();
-    clearTimeout(imgT2);
-    $('imgTagDrop2').classList.remove('on');
-    if (v.length < 2) { $('imgTagSpin2').classList.remove('on'); return; }
-    $('imgTagSpin2').classList.add('on');
-    imgT2 = setTimeout(() => {
-      $('imgTagSpin2').classList.remove('on');
-      const ul = $('imgTagList2');
-      ul.innerHTML = '';
-      gen(v).forEach(h => {
-        const li = document.createElement('li');
-        li.textContent = h;
-        li.addEventListener('click', () => {
-          if (!imgTags2.includes(h)) imgTags2.push(h);
-          $('imgTagInp2').value = '';
-          $('imgTagDrop2').classList.remove('on');
-          renderImgTags2();
-        });
-        ul.appendChild(li);
-      });
-      $('imgTagDrop2').classList.add('on');
-    }, 500);
-  });
-
-  function renderImgTags2() {
-    const c = $('imgTagChips2');
-    c.innerHTML = '';
-    imgTags2.forEach((h, i) => {
-      const s = document.createElement('span');
-      s.className = 'chip';
-      s.innerHTML = `<span class="chip__text">${h}</span><button class="chip__x">&times;</button>`;
-      s.querySelector('.chip__x').addEventListener('click', () => { imgTags2.splice(i, 1); renderImgTags2(); });
-      c.appendChild(s);
-    });
-    updateImg2Dot();
-  }
 
   // ── Green dot indicators ──
   function updateImgDots() {
@@ -1261,19 +932,9 @@
     $('dotImg1').classList.toggle('on', hasChanges);
   }
 
-  function updateImg2Dot() {
-    const hasChanges = imgTags2.length > 0 || $('altInp2').value.trim().length > 0;
-    $('dotImg2').classList.toggle('on', hasChanges);
-  }
-
   function updateVid1Dot() {
     const hasChanges = $('vidTitle').value.trim().length > 0 || vTags.length > 0 || $('vidResetImg').style.display !== 'none';
     $('dotVid1').classList.toggle('on', hasChanges);
-  }
-
-  function updateVid2Dot() {
-    const hasChanges = $('vidTitle2').value.trim().length > 0 || vTags2.length > 0 || $('vidResetImg2').style.display !== 'none';
-    $('dotVid2').classList.toggle('on', hasChanges);
   }
 
   // ── Ratio switcher ──
@@ -1286,7 +947,6 @@
   function setRatio(r) {
     const src = ratioMap[r] || ratioMap.square;
     $('photoImg').src = src;
-    $('photoImg2').src = src;
     // Also update video previews
     $('vidPreviewImg').src = src;
     $('vidPlayIcon').style.display = '';
