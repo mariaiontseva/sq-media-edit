@@ -226,8 +226,8 @@
   }
   .overlay.open .dialog { transform: translateY(0); }
 
-  .dialog--img { max-width: 780px; max-height: 90vh; width: fit-content; min-width: 480px; }
-  .dialog--vid { max-width: 780px; max-height: 90vh; }
+  .dialog--img { max-width: 784px; max-height: 90vh; width: fit-content; min-width: 480px; }
+  .dialog--vid { max-width: 784px; max-height: 90vh; }
   .dialog--tag { max-width: 380px; }
 
   .dialog__head {
@@ -264,7 +264,7 @@
   /* ── Edit Image ── */
   .img-layout {
     display: flex;
-    gap: 24px;
+    gap: 16px;
     align-items: flex-start;
   }
 
@@ -322,7 +322,7 @@
   .ptag__x:hover { color: #fff; background: #1a1a2e; }
 
   /* Right side */
-  .sidebar { display: flex; flex-direction: column; gap: 20px; width: 280px; flex-shrink: 0; }
+  .sidebar { display: flex; flex-direction: column; gap: 20px; width: 320px; flex-shrink: 0; }
 
   .inp {
     font-family: var(--font); font-size: 16px;
@@ -556,7 +556,7 @@
       <div class="img-layout">
         <div class="photo-wrap">
           <div class="photo-box" id="photoBox">
-            <img id="photoImg" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=800&h=800&fit=crop" alt="Photo">
+            <img id="photoImg" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop" alt="Photo">
           </div>
         </div>
         <div class="sidebar">
@@ -939,9 +939,9 @@
 
   // ── Ratio switcher ──
   const ratioMap = {
-    square:    'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=800&h=800&fit=crop',
-    story:     'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600&h=1067&fit=crop',
-    landscape: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=1000&h=563&fit=crop',
+    square:    'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop',
+    story:     'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=711&fit=crop',
+    landscape: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=225&fit=crop',
   };
 
   function setRatio(r) {
