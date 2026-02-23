@@ -457,12 +457,12 @@
 
   /* Reset image button */
   .btn--reset {
-    font-family: var(--font); font-size: 13px; font-weight: 500;
-    color: var(--text-3); background: none; border: 1px solid var(--border);
-    border-radius: var(--r); padding: 8px 16px; cursor: pointer;
+    font-family: var(--font); font-size: 14px; font-weight: 600;
+    color: var(--blue); background: none; border: 1px solid var(--blue);
+    border-radius: var(--r); padding: 10px 20px; cursor: pointer;
     transition: all 0.15s; margin-top: 8px;
   }
-  .btn--reset:hover { color: var(--text); border-color: var(--text-4); }
+  .btn--reset:hover { color: var(--blue-hover); border-color: var(--blue-hover); background: var(--blue-06); }
 
   /* ── Tag sub-modal ── */
   .dialog--tag .dialog__body { padding: 16px 24px 24px; }
@@ -963,14 +963,21 @@
     if (dragIdx < 0) return;
     e.preventDefault();
     const r = photoBox.getBoundingClientRect();
-    let nx = ((e.clientX - dragOff.x - r.left) / r.width) * 100;
-    let ny = ((e.clientY - dragOff.y - r.top) / r.height) * 100;
-    nx = Math.max(2, Math.min(98, nx));
-    ny = Math.max(2, Math.min(98, ny));
-    pTags[dragIdx].x = nx;
-    pTags[dragIdx].y = ny;
     const el = photoBox.querySelectorAll('.ptag')[dragIdx];
-    if (el) { el.style.left = nx + '%'; el.style.top = ny + '%'; }
+    if (!el) return;
+    const tagW = el.offsetWidth;
+    const tagH = el.offsetHeight;
+    // cursor position → intended centre in px
+    let cx = e.clientX - dragOff.x - r.left;
+    let cy = e.clientY - dragOff.y - r.top;
+    // clamp so entire tag stays inside photo
+    cx = Math.max(tagW / 2, Math.min(r.width - tagW / 2, cx));
+    cy = Math.max(tagH / 2, Math.min(r.height - tagH / 2, cy));
+    // store as % (intended centre)
+    pTags[dragIdx].x = (cx / r.width) * 100;
+    pTags[dragIdx].y = (cy / r.height) * 100;
+    el.style.left = pTags[dragIdx].x + '%';
+    el.style.top  = pTags[dragIdx].y + '%';
   }
 
   function onDragEnd() {
@@ -978,6 +985,28 @@
     document.removeEventListener('pointermove', onDragMove);
     document.removeEventListener('pointerup', onDragEnd);
     document.removeEventListener('pointercancel', onDragEnd);
+  }
+
+  // Keep every tag fully inside the photo.
+  // pTags[].x/y store the intended centre (%), but the displayed
+  // position is nudged so the pill never overflows the photo-box.
+  function clampAllTags() {
+    const boxW = photoBox.offsetWidth;
+    const boxH = photoBox.offsetHeight;
+    if (!boxW || !boxH) return;
+    photoBox.querySelectorAll('.ptag').forEach((el, i) => {
+      if (!pTags[i]) return;
+      const tagW = el.offsetWidth;
+      const tagH = el.offsetHeight;
+      // intended centre in px
+      let cx = (pTags[i].x / 100) * boxW;
+      let cy = (pTags[i].y / 100) * boxH;
+      // clamp so entire tag stays within photo
+      cx = Math.max(tagW / 2, Math.min(boxW - tagW / 2, cx));
+      cy = Math.max(tagH / 2, Math.min(boxH - tagH / 2, cy));
+      el.style.left = (cx / boxW * 100) + '%';
+      el.style.top  = (cy / boxH * 100) + '%';
+    });
   }
 
   function renderPTags() {
@@ -993,13 +1022,16 @@
       d.querySelector('.ptag__x').addEventListener('click', e => {
         e.stopPropagation(); pTags.splice(i, 1); renderPTags();
       });
-      // Drag (pointer events = mouse + touch unified)
       d.addEventListener('pointerdown', e => onDragStart(e, i));
-      // Prevent click-through to photo
       d.addEventListener('click', e => e.stopPropagation());
       photoBox.appendChild(d);
     });
+    // after DOM paint, clamp tags into photo bounds
+    requestAnimationFrame(clampAllTags);
   }
+
+  // re-clamp on resize (viewport shrink / tablet / mobile)
+  new ResizeObserver(clampAllTags).observe(photoBox);
 
   // ── VIDEO EDIT ──
   let vTags = [];
