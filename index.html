@@ -226,8 +226,8 @@
   }
   .overlay.open .dialog { transform: translateY(0); }
 
-  .dialog--img { max-width: 784px; max-height: 90vh; width: fit-content; min-width: 480px; }
-  .dialog--vid { max-width: 784px; max-height: 90vh; }
+  .dialog--img { max-width: 784px; max-height: 95vh; width: fit-content; min-width: 480px; }
+  .dialog--vid { max-width: 784px; max-height: 95vh; width: fit-content; min-width: 480px; }
   .dialog--tag { max-width: 380px; }
 
   .dialog__head {
@@ -256,10 +256,13 @@
   }
 
   .dialog__foot {
-    padding: 0 24px 20px;
+    padding: 24px 24px 20px;
+    border-top: 1px solid transparent;
     display: flex; justify-content: flex-end;
     flex-shrink: 0;
+    transition: border-color 0.15s;
   }
+  .dialog__foot.has-border { border-top-color: var(--border-light); }
 
   /* ── Edit Image ── */
   .img-layout {
@@ -283,12 +286,16 @@
     z-index: 1;
   }
   .photo-box, .photo-box * { cursor: crosshair !important; }
+  .photo-box.at-limit, .photo-box.at-limit * { cursor: default !important; }
+  .photo-box.at-limit .ptag, .photo-box.at-limit .ptag * { cursor: grab !important; }
+  .photo-box.at-limit .ptag:active, .photo-box.at-limit .ptag:active * { cursor: grabbing !important; }
+  .photo-box.at-limit .ptag__x { cursor: pointer !important; }
   .photo-box .ptag, .photo-box .ptag * { cursor: grab !important; }
   .photo-box .ptag:active, .photo-box .ptag:active * { cursor: grabbing !important; }
   .photo-box .ptag__x { cursor: pointer !important; }
   .photo-box img {
     display: block;
-    max-height: calc(90vh - 180px);
+    max-height: calc(95vh - 180px);
     max-width: 100%;
   }
 
@@ -339,19 +346,18 @@
 
   /* ── Edit Video ── */
   .vid-layout {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 24px;
-    align-items: start;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
   }
 
   .vid-preview {
     position: relative; border-radius: var(--r);
     overflow: hidden; background: #0a0a0f; line-height: 0;
   }
-  .vid-preview img { width: 100%; display: block; }
+  .vid-preview img { display: block; max-height: calc(95vh - 180px); max-width: 100%; }
 
-  .vid-sidebar { display: flex; flex-direction: column; gap: 20px; }
+  .vid-sidebar { display: flex; flex-direction: column; gap: 20px; width: 320px; flex-shrink: 0; }
 
   .group { display: flex; flex-direction: column; gap: 8px; }
 
@@ -412,7 +418,22 @@
     border-radius: var(--r);
     padding: 14px 16px; font-size: 16px; line-height: 1.5;
     color: var(--text-2);
+    border: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
   }
+  .info-box--limit {
+    background: #fef2f1;
+    border-color: #f0c0bc;
+    color: var(--text-2);
+  }
+
+  .search-inp--error { border-color: var(--red); }
+  .search-inp--error:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(217,48,37,0.08); }
+  .field-error {
+    font-size: 12px; color: var(--red); margin-top: 4px;
+    display: none;
+  }
+  .field-error.on { display: block; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 
@@ -481,6 +502,8 @@
   }
 
   /* ── Responsive ── */
+
+  /* Mobile: < 600px — full-screen, single column */
   @media (max-width: 599px) {
     body { padding: 16px; }
     .overlay { padding: 0; }
@@ -494,15 +517,20 @@
       padding: 16px 24px;
       border-top: 1px solid var(--border);
     }
-    .img-layout { flex-direction: column; gap: 20px; }
+    .img-layout { flex-direction: column; align-items: center; gap: 20px; }
     .sidebar { width: 100%; }
     .dialog--img { min-width: 0; }
-    .vid-layout { grid-template-columns: 1fr; gap: 20px; }
+    .vid-layout { flex-direction: column; align-items: center; gap: 20px; }
+    .vid-sidebar { width: 100%; }
+    .dialog--vid { min-width: 0; }
   }
 
-  @media (min-width: 600px) and (max-width: 860px) {
-    .sidebar { width: 220px; }
-    .vid-layout { grid-template-columns: 200px 1fr; gap: 20px; }
+  /* Tablet: 600–1023px — floating modal, 50/50 split */
+  @media (min-width: 600px) and (max-width: 1023px) {
+    .photo-wrap { flex: 1 1 0; min-width: 0; }
+    .sidebar { flex: 1 1 0; min-width: 0; width: auto; }
+    .vid-layout > *:first-child { flex: 1 1 0; min-width: 0; }
+    .vid-sidebar { flex: 1 1 0; min-width: 0; width: auto; }
   }
 </style>
 </head>
@@ -543,6 +571,108 @@
   <button class="ratio-btn" data-ratio="landscape">Landscape 16:9</button>
 </div>
 
+<!-- ── Responsive Specs ── -->
+<div class="media-block" style="font-size:14px; line-height:1.65; color:var(--text-2);">
+  <div style="font-size:16px; font-weight:600; color:var(--text); margin-bottom:16px;">Responsive Specs</div>
+
+  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:8px;">Modal dimensions</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:8px;">
+    <thead>
+      <tr style="border-bottom:1px solid var(--border); text-align:left;">
+        <th style="padding:6px 8px 6px 0; font-weight:600; color:var(--text);">Modal</th>
+        <th style="padding:6px 8px; font-weight:600; color:var(--text);">Max Width</th>
+        <th style="padding:6px 8px; font-weight:600; color:var(--text);">Max Height</th>
+      </tr>
+    </thead>
+    <tbody style="color:var(--text-2);">
+      <tr style="border-bottom:1px solid var(--border-light);">
+        <td style="padding:6px 8px 6px 0;">Edit Image</td>
+        <td style="padding:6px 8px; font-family:monospace;">784px</td>
+        <td style="padding:6px 8px; font-family:monospace;">95vh</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 8px 6px 0;">Edit Video</td>
+        <td style="padding:6px 8px; font-family:monospace;">784px</td>
+        <td style="padding:6px 8px; font-family:monospace;">95vh</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:8px;">Internal layout — Edit Image / Edit Video</div>
+  <div style="font-family:monospace; font-size:12px; background:var(--bg); border-radius:var(--r); padding:14px 16px; margin-bottom:20px; line-height:1.8; white-space:pre;">+-- dialog (max-width: 784px) ----------------+
+|  padding: 24px                               |
+|  +----------+        +---------------+       |
+|  |          | 16px   |               |       |
+|  |  400 px  | gap    |    320 px     |       |
+|  |          |&lt;------&gt;|               |       |
+|  +----------+        +---------------+       |
+|                                              |
+|  content: 400 + 16 + 320 = 736px            |
+|  padding: 24 x 2 = 48px                     |
+|  total: 784px                                |
++----------------------------------------------+</div>
+
+  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:8px;">Image sizes per aspect ratio</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:20px;">
+    <thead>
+      <tr style="border-bottom:1px solid var(--border); text-align:left;">
+        <th style="padding:6px 8px 6px 0; font-weight:600; color:var(--text);">Ratio</th>
+        <th style="padding:6px 8px; font-weight:600; color:var(--text);">Image Size</th>
+        <th style="padding:6px 8px; font-weight:600; color:var(--text);">Constrained by</th>
+      </tr>
+    </thead>
+    <tbody style="color:var(--text-2);">
+      <tr style="border-bottom:1px solid var(--border-light);">
+        <td style="padding:6px 8px 6px 0;">Square 1:1</td>
+        <td style="padding:6px 8px; font-family:monospace;">400 × 400</td>
+        <td style="padding:6px 8px;">width</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border-light);">
+        <td style="padding:6px 8px 6px 0;">Story 9:16</td>
+        <td style="padding:6px 8px; font-family:monospace;">400 × 711</td>
+        <td style="padding:6px 8px;"><code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px;">max-height: calc(95vh - 180px)</code> — scales down proportionally on shorter viewports</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 8px 6px 0;">Landscape 16:9</td>
+        <td style="padding:6px 8px; font-family:monospace;">400 × 225</td>
+        <td style="padding:6px 8px;">width</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:8px;">Tag truncation</div>
+  <div style="font-size:13px; margin-bottom:20px;">Username tags (photo tags and video chips) share the same rule: <code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px;">max-width: 280px</code> with <code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px;">text-overflow: ellipsis</code>. Tags must never overflow their container boundary.</div>
+
+  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:8px;">Breakpoints</div>
+
+  <div style="margin-bottom:12px;">
+    <div style="font-weight:600; color:var(--text); margin-bottom:4px;">≥ 1024px — Desktop</div>
+    <ul style="margin-left:20px; font-size:13px;">
+      <li>Two-column layout: 400px preview + 320px sidebar</li>
+      <li>Dialog floats centered with 24px overlay padding on all sides</li>
+    </ul>
+  </div>
+
+  <div style="margin-bottom:12px;">
+    <div style="font-weight:600; color:var(--text); margin-bottom:4px;">600 – 1023px — Tablet</div>
+    <ul style="margin-left:20px; font-size:13px;">
+      <li>Dialog still floats centered, shrinks to <code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px;">100vw - 48px</code></li>
+      <li>Both modals switch to 50/50 split — preview and sidebar share space equally</li>
+    </ul>
+  </div>
+
+  <div style="margin-bottom:12px;">
+    <div style="font-weight:600; color:var(--text); margin-bottom:4px;">< 600px — Mobile</div>
+    <ul style="margin-left:20px; font-size:13px;">
+      <li>Dialog goes <strong>full-screen</strong> — 100% width, 100% height, no border-radius, no overlay padding</li>
+      <li>Layout collapses to single column — preview stacks above sidebar</li>
+      <li>Sidebar becomes 100% width</li>
+      <li>Body scrolls vertically; footer sticks to bottom with permanent border-top</li>
+    </ul>
+  </div>
+
+</div>
+
 <!-- ═══ EDIT IMAGE MODAL ═══ -->
 <div class="overlay overlay--main" id="imgOvl">
   <div class="dialog dialog--img">
@@ -562,7 +692,7 @@
         <div class="sidebar">
           <div class="group">
             <div class="group__title">Tag People</div>
-            <div class="info-box">Click anywhere on the photo to place a tag. You can drag tags to reposition them.</div>
+            <div class="info-box" id="tagInfo">Click anywhere on the photo to place a tag. You can drag tags to reposition them.</div>
           </div>
           <div class="group">
             <div class="group__head">
@@ -613,7 +743,7 @@
       <div class="vid-layout">
         <div>
           <div class="vid-preview" id="vidPreview">
-            <img id="vidPreviewImg" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600&h=900&fit=crop" alt="">
+            <img id="vidPreviewImg" src="https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=400&h=400&fit=crop" alt="">
             <div class="thumb__play" id="vidPlayIcon"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
           </div>
           <button class="btn--reset" id="vidResetImg" style="display:none;width:100%;">Reset Image</button>
@@ -639,6 +769,7 @@
               <div class="search-spin" id="vtagSpin"></div>
               <div class="ddrop" id="vtagDrop"><ul id="vtagList"></ul></div>
             </div>
+            <div class="field-error" id="vtagError">Instagram allows up to 20 tags per video. To add a new tag, remove an existing one first.</div>
             <div class="info-box">Enter the exact Instagram username. Only public business or creator accounts can be tagged.</div>
             <div class="chips" id="vtagChips"></div>
           </div>
@@ -727,6 +858,7 @@
   function openOvl(id) {
     $(id).classList.add('open');
     document.body.style.overflow = 'hidden';
+    requestAnimationFrame(checkFootBorders);
   }
 
   $('openImg').addEventListener('click', e => { e.stopPropagation(); openOvl('imgOvl'); });
@@ -754,9 +886,22 @@
   });
 
 
+  const TAG_LIMIT = 20;
+  const tagInfo = $('tagInfo');
+  const tagInfoDefault = 'Click anywhere on the photo to place a tag. You can drag tags to reposition them.';
+  const tagInfoLimit = 'Instagram allows up to 20 tags per photo. To add a new tag, remove an existing one first.';
+
+  function updateTagLimit() {
+    const atLimit = pTags.length >= TAG_LIMIT;
+    photoBox.classList.toggle('at-limit', atLimit);
+    tagInfo.classList.toggle('info-box--limit', atLimit);
+    tagInfo.textContent = atLimit ? tagInfoLimit : tagInfoDefault;
+  }
+
   // Click on photo → open tag sub-modal
   photoBox.addEventListener('click', e => {
-    if (e.target.closest('.ptag')) return; // don't open if clicking tag
+    if (e.target.closest('.ptag')) return;
+    if (pTags.length >= TAG_LIMIT) return;
     const r = photoBox.getBoundingClientRect();
     pendXY = {
       x: ((e.clientX - r.left) / r.width) * 100,
@@ -841,6 +986,7 @@
   function renderPTags() {
     photoBox.querySelectorAll('.ptag').forEach(el => el.remove());
     updateImgDots();
+    updateTagLimit();
     pTags.forEach((t, i) => {
       const d = document.createElement('div');
       d.className = 'ptag';
@@ -877,6 +1023,7 @@
         const li = document.createElement('li');
         li.textContent = h;
         li.addEventListener('click', () => {
+          if (vTags.length >= TAG_LIMIT) return;
           if (!vTags.includes(h)) vTags.push(h);
           $('vtagInp').value = '';
           $('vtagDrop').classList.remove('on');
@@ -888,6 +1035,13 @@
     }, 500);
   });
 
+  function updateVTagLimit() {
+    const atLimit = vTags.length >= TAG_LIMIT;
+    $('vtagInp').classList.toggle('search-inp--error', atLimit);
+    $('vtagError').classList.toggle('on', atLimit);
+    $('vtagInp').disabled = atLimit;
+  }
+
   function renderVTags() {
     const c = $('vtagChips');
     c.innerHTML = '';
@@ -898,6 +1052,7 @@
       s.querySelector('.chip__x').addEventListener('click', () => { vTags.splice(i, 1); renderVTags(); });
       c.appendChild(s);
     });
+    updateVTagLimit();
     updateVid1Dot();
   }
 
@@ -936,6 +1091,21 @@
     const hasChanges = $('vidTitle').value.trim().length > 0 || vTags.length > 0 || $('vidResetImg').style.display !== 'none';
     $('dotVid1').classList.toggle('on', hasChanges);
   }
+
+  // ── Footer border on overflow ──
+  function checkFootBorders() {
+    document.querySelectorAll('.dialog').forEach(dlg => {
+      const body = dlg.querySelector('.dialog__body');
+      const foot = dlg.querySelector('.dialog__foot');
+      if (!body || !foot) return;
+      const hasOverflow = body.scrollHeight > body.clientHeight + 1;
+      foot.classList.toggle('has-border', hasOverflow);
+    });
+  }
+  document.querySelectorAll('.dialog__body').forEach(b => {
+    b.addEventListener('scroll', checkFootBorders);
+  });
+  new ResizeObserver(checkFootBorders).observe(document.documentElement);
 
   // ── Ratio switcher ──
   const ratioMap = {
