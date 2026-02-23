@@ -315,6 +315,7 @@
     cursor: grab;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     user-select: none;
+    touch-action: none;
     transition: box-shadow 0.15s;
   }
   .ptag:active { cursor: grabbing; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
@@ -940,47 +941,43 @@
     }, 500);
   });
 
-  // ── Draggable photo tags ──
+  // ── Draggable photo tags (Pointer Events — works on desktop + mobile) ──
   let dragIdx = -1, dragOff = { x:0, y:0 };
 
   function onDragStart(e, idx) {
     e.preventDefault();
     e.stopPropagation();
     dragIdx = idx;
-    const touch = e.touches ? e.touches[0] : e;
     const r = photoBox.getBoundingClientRect();
     const tagX = (pTags[idx].x / 100) * r.width;
     const tagY = (pTags[idx].y / 100) * r.height;
-    dragOff.x = touch.clientX - (r.left + tagX);
-    dragOff.y = touch.clientY - (r.top + tagY);
-    document.addEventListener('mousemove', onDragMove);
-    document.addEventListener('mouseup', onDragEnd);
-    document.addEventListener('touchmove', onDragMove, { passive: false });
-    document.addEventListener('touchend', onDragEnd);
+    dragOff.x = e.clientX - (r.left + tagX);
+    dragOff.y = e.clientY - (r.top + tagY);
+    e.target.closest('.ptag').setPointerCapture(e.pointerId);
+    document.addEventListener('pointermove', onDragMove);
+    document.addEventListener('pointerup', onDragEnd);
+    document.addEventListener('pointercancel', onDragEnd);
   }
 
   function onDragMove(e) {
     if (dragIdx < 0) return;
     e.preventDefault();
-    const touch = e.touches ? e.touches[0] : e;
     const r = photoBox.getBoundingClientRect();
-    let nx = ((touch.clientX - dragOff.x - r.left) / r.width) * 100;
-    let ny = ((touch.clientY - dragOff.y - r.top) / r.height) * 100;
+    let nx = ((e.clientX - dragOff.x - r.left) / r.width) * 100;
+    let ny = ((e.clientY - dragOff.y - r.top) / r.height) * 100;
     nx = Math.max(2, Math.min(98, nx));
     ny = Math.max(2, Math.min(98, ny));
     pTags[dragIdx].x = nx;
     pTags[dragIdx].y = ny;
-    // Direct DOM update for smoothness
     const el = photoBox.querySelectorAll('.ptag')[dragIdx];
     if (el) { el.style.left = nx + '%'; el.style.top = ny + '%'; }
   }
 
   function onDragEnd() {
     dragIdx = -1;
-    document.removeEventListener('mousemove', onDragMove);
-    document.removeEventListener('mouseup', onDragEnd);
-    document.removeEventListener('touchmove', onDragMove);
-    document.removeEventListener('touchend', onDragEnd);
+    document.removeEventListener('pointermove', onDragMove);
+    document.removeEventListener('pointerup', onDragEnd);
+    document.removeEventListener('pointercancel', onDragEnd);
   }
 
   function renderPTags() {
@@ -996,9 +993,8 @@
       d.querySelector('.ptag__x').addEventListener('click', e => {
         e.stopPropagation(); pTags.splice(i, 1); renderPTags();
       });
-      // Drag
-      d.addEventListener('mousedown', e => onDragStart(e, i));
-      d.addEventListener('touchstart', e => onDragStart(e, i), { passive: false });
+      // Drag (pointer events = mouse + touch unified)
+      d.addEventListener('pointerdown', e => onDragStart(e, i));
       // Prevent click-through to photo
       d.addEventListener('click', e => e.stopPropagation());
       photoBox.appendChild(d);
